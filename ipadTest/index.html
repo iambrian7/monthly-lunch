@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iPad test</title>
+</head>
+<body>
+<h1 id="h1">Test for iPad with ES6</h1>
+<button onclick="doNormal()">Click for normal insert</button>
+<!--<button onclick="doES6()">Click for ES6 insert</button>-->
+<script>
+    var h1Test = document.getElementById('h1')
+    function doNormal(event){
+       h1Test.innerText = 'got normal text '
+        if (check())
+            h1Test.innerText = 'ES6 is good in this browser';
+        else
+            h1Test.innerText = 'ES6 functions not present '
+
+    }
+   // var doES6 = (e) => h1Test.innerText = 'got ES66 text '
+    function check() {
+        "use strict";
+
+        if (typeof Symbol == "undefined") return false;
+        try {
+            eval("class Foo {}");
+            eval("var bar = (x) => x+1");
+        } catch (e) { return false; }
+
+        return true;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.625, user-scalable=yes" />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />-->
+    <title>Layout Test</title>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <style>
+        body {
+            border: 5px green solid;
+            width: 100vw;
+            height: 100vh;
+            margin: 0 auto;
+        }
+        .content {
+            font-size: 40px;
+        }
+        header {
+            border: 2px solid red;
+        }
+        .main {
+            background: #ccccff;
+            border: 2px solid yellow;
+        }
+        #show-proposed {
+            font-size: 3em;
+        }
+        .text-onright {
+            text-align: right;
+        }
+        /*.proposed {*/
+            /*display: none;*/
+        /*}*/
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1 class="title">The Title</h1>
+    <h1 class="text-onright">This text is on right</h1>
+    <h1 class="show-window-size"></h1>
+    <div class="content">
+        <p>The content</p>
+        <div class="proposed hide">
+            <button class="publish" onclick="publishMeeting()">Publish</button>
+            <select id="selected-owner">
+                <option value="" default selected>Select host</option>
+                <option value="Ben">Ben</option>
+                <option value="Brian">Brian</option>
+                <option value="Chris">Chris</option>
+                <option value="Mark">Mark</option>
+            </select>
+            <input type="date">
+        </div>
+    </div>
+</header>
+<div class="main">
+    Main Content
+    <button id="show-proposed"> Propose Meeting </button>
+
+</div>
+<script>
+    $( window ).resize(function() {
+        $('body').width($( window ).width());
+        $('.show-window-size').text('Window: width= ' + $( window ).width() + ' height= ' + $( window ).height())
+        //console.log('resize: ' + $( window ).width())
+    });
+    $( "#show-proposed" ).click(function() {
+        $('.proposed').toggleClass('hide')
+
+    });
+    $(window).trigger('resize');
+</script>
+</body>
+</html>
