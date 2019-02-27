@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="layout.css">
+  <style>
+    #app{
+      background-image: url("./images/clouds01.jpg");
+    }
+    .section{
+      width: 100%;
+      height: 81vh;
+    }
+  </style>
+</head>
+<body>
+  <p>Search: <input type="text" id="searchPlace"></p>
+  <div id="app">
+    <input type="text" v-model="new_address">
+    <button @click.enter="updateCoordinates">Search Address</button>
+    <nav-flex></nav-flex>
+    <!-- <li v-for="user in users" class="user" :key="user['.key']">
+        <span>{{user.name}} - {{user.email}}</span>
+        <button v-on:click="removeUser(user)">X</button>
+      </li>
+    <form id="form" v-on:submit.prevent="signInWithPassword">
+      <input type="text" v-model="newUser.name" placeholder="Username">
+      <input type="email" v-model="newUser.email" placeholder="email@email.com">
+      <input type="password" v-model="newUser.password" placeholder="password">
+      <input type="submit" value="Add User">
+      <button @click="signOut()">SignOut</button>
+    </form>
+    <ul class="errors">
+      <li v-show="!validation.name">Name cannot be empty.</li>
+      <li v-show="!validation.email">Please provide a valid email address.</li>
+    </ul> -->
+    <div class="section one ">
+      
+      <router-view :db="db"/>
+    </div>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.0.1/vuex.js"></script>
+  <!-- <script src="https://unpkg.com/http-vue-loader"></script> -->
+  <script src="../js/httpVueLoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.5.3/vue-router.min.js"></script>
+  <!-- <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script> -->
+  <!-- Firebase -->
+  <script src="https://gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+<!-- VueFire -->
+<script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
+<script>
+  function initMap() {
+    // var myLatLng = {lat: 44.9169800, lng: -93.4439190};
+    // var mapDiv = document.getElementById('map');
+    //  alert('init map..........'    )
+    // map = new google.maps.Map(mapDiv, {
+      //     center: myLatLng,
+      //     zoom: 13
+      // });
+      //    map.panBy(10,10);
+      //    var marker = new google.maps.Marker({
+        //        position: myLatLng,
+        //        map: map,
+        //        title: 'Home'
+        //    });
+        // $('#pac-input').val('');
+        var input = (document.getElementById('searchPlace'));
+        //   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        
+        var searchBox = new google.maps.places.SearchBox((input));
+        
+        // [START region_getplaces]
+        // Listen for the event fired when the user selects an item from the
+        // pick list. Retrieve the matching places for that item.
+        google.maps.event.addListener(searchBox, 'places_changed', function () {
+          var places = searchBox.getPlaces();
+          
+          if (places.length == 0) {
+            
+            return;
+          }
+          // myPlaces.push(places[0]); // got next place
+          var p = places[0];
+          console.log("place found at: " + p.name + ' and ' + p.formatted_address)
+          //   currentProposedLunch.place = p;
+          
+          var info = p.name + ' ' + p.formatted_address + ' lat:' + p.geometry.location.lat() + 'lng:' + p.geometry.location.lng();
+        });
+      } // end of initMap()
+      function mapReady(){
+          console.log('map ready');
+//          mapIsReady = true;
+          initMap();
+      }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoI7av5H3SWALDdJcwDBcRFS0-SAhP5vo&libraries=places&callback=mapReady" async defer></script>
+<script>   
+      var emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      var myLunches = []
+      // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyABQGsBP4hzNnnbSbzpaDjKdE35Ggozwiw",
+      //  https://console.firebase.google.com/project/monthlylunch-ecb8a/database/data/
+        authDomain: "monthlylunch-ecb8a.firebaseapp.com",
+        databaseURL: "https://monthlylunch-ecb8a.firebaseio.com",
+        storageBucket: "monthlylunch-ecb8a.appspot.com",
+        messagingSenderId: "412720729655"
+    };
+    firebase.initializeApp(config);
+    // add a realtime listener
+    firebase.auth().onAuthStateChanged( function(firebaseUser) {
+        if (firebaseUser){
+            console.log(firebaseUser)
+            // modal.style.display = "none";
+            // btnLogout.classList.remove('hide')
+            // divSignedIn.classList.remove('hide')
+            // // $('.do-signup').toggleClass('hide')
+            // divSignedOut.classList.add('hide')
+            // txtUser.innerText = firebaseUser.email;
+            // signupList.classList.add('hide')
+            // errorSignIn.classList.add('hide')
+        } else {
+            console.log('not logged in')
+    //     signupList.classList.remove('hide')
+    // btnLogout.classList.add('hide')
+    // divSignedIn.classList.add('hide')
+    }
+    })
+    const db = firebase.database()
+  //  const lunchData = db.ref().child('web/data/lunches')
+  //  lunchData.on('value', function(snap) {
+  //    console.log('lunchData:' + JSON.stringify(snap.val(), null, ' '))
+  //    // myLunches.push(lunchData)
+  //  });
+</script>
+<script>
+
+const router = new VueRouter({
+  routes: [
+    { path: '/', component: httpVueLoader('./components/my-component.vue')},//, props: {lunchData} },
+    { path: '/login', component: httpVueLoader('./components/login.vue'), props: {firebase: firebase} },
+  ]
+})
+var usersRef = firebase.database().ref('users')
+
+Vue.component('editable',{
+  template:'<div contenteditable="true" @input="update"></div>',
+  props:['content'],
+  mounted:function(){
+    this.$el.innerText = this.content;
+  },
+  methods:{
+    update:function(event){
+      this.$emit('update',event.target.innerText);
+    }
+  }
+})
+var app = new Vue({
+el: '#app',
+router,
+components: {
+          // 'my-component': httpVueLoader('./components/my-component.vue'),
+          // 'vue-nav': httpVueLoader('./components/vueNav.vue'),
+          'nav-flex': httpVueLoader('./components/nav2.vue'),
+        },
+data: {
+  title: "Website Seven",
+  description: "A justification of a global AA meeting directory",
+  focus: "",
+  today: new Date(),
+  db: db,
+ // lunches: [],
+  newUser: {
+      name: '',
+      email: '',
+      password: ''
+    },
+    new_address: '',
+    geocder: null
+  }, // end of data
+
+ // firebase binding
+  // https://github.com/vuejs/vuefire
+  firebase: {
+    users: usersRef,
+   // lunches: lunchData
+  },
+
+methods: {
+/**
+   * Update the coordinates of the input
+   * @param  {Coordinates} value
+   */
+    updateCoordinates () {
+      var value = this.new_address
+      if (!value || value.length < 6) return;
+      // if (!value && !(value.lat || value.lng)) return;
+      if (!this.geocoder) this.geocoder = new google.maps.Geocoder();
+        this.geocoder.geocode({'address': value}, (results, status) => {
+      // if (!this.geolocation.geocoder) this.geolocation.geocoder = new google.maps.Geocoder();
+      // this.geolocation.geocoder.geocode({'address': value}, (results, status) => {
+      // this.geolocation.geocoder.geocode({'location': value}, (results, status) => {
+          if (status === 'OK') {
+             // results = this.filterGeocodeResultTypes(results);
+              if (results[0]) {
+                console.log(`found address: ${JSON.stringify(results[0], null, 4)}`)
+                 // this.$emit('placechanged', this.formatResult(results[0]), results[0], this.id);
+                // this.update(results[0].formatted_address);
+              } else {
+                  this.$emit('error', 'no result for provided coordinates');
+              }
+          } else {
+              this.$emit('error', 'error getting address from coords');
+          }
+      })
+  },
+  signOut: function(){
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+      }).catch(function(error) {
+        // An error happened.
+      });
+  },
+  signInWithPassword() {
+        return firebase.auth().signInWithEmailAndPassword(this.newUser.email, this.newUser.password)
+        .then((userData) => {
+         // this.onSignedIn();
+         console.log(`userData: ${userData}`)
+          return userData;
+        })
+        .catch((error) => { this.errorMessage = error.message });
+      },
+   // Add login event
+   login: function(){
+    const auth = firebase.auth();
+    // signin
+    const promise = auth.signInWithEmailAndPassword('bkcge@gmail.com','bkcbkc07')
+    promise.catch(function(e) {console.log(e.message)
+    })
+   },
+  //  btnLogin.addEventListener('click', function(e) {
+  //       const email = txtEmail.value;
+  //   const pass = txtPassword.value;
+  //   const auth = firebase.auth();
+  //   // signin
+  //   const promise = auth.signInWithEmailAndPassword(email, pass)
+  //   promise.catch(function(e) {console.log(e.message)
+  //   errorSignIn.classList.remove('hide')
+  //   })
+  //   })
+  //   ,
+  addUser: function () {
+      if (this.isValid) {
+        usersRef.push(this.newUser)
+        this.newUser.name = ''
+        this.newUser.email = ''
+      }
+    },
+    removeUser: function (user) {
+      usersRef.child(user['.key']).remove()
+    }
+},
+computed: {
+  validation: function () {
+      return {
+        name: !!this.newUser.name.trim(),
+        email: emailRE.test(this.newUser.email)
+      }
+    },
+    isValid: function () {
+      var validation = this.validation
+      return Object.keys(validation).every(function (key) {
+        return validation[key]
+      })
+    }
+},
+filters: {
+  
+monthname: function (value) {
+  if (!value) return ''
+  // value = value.toString()
+  return MONTH_NAMES[value-1 ].substr(0,3)
+},
+dayname: function(value){
+  var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var valueName = app.$data.today.getDate() - value;
+  var result = new Date(app.$data.today)
+  result.setDate(result.getDate() + valueName)
+  return days[result.getDay()].substr(0,1)
+}
+},
+mounted(){
+  console.log("mounted........")
+  // this.startTimer();
+
+  // var geocoder;
+  // var map;
+  // function initialize() {
+  //   geocoder = new google.maps.Geocoder();
+  //   var latlng = new google.maps.LatLng(-34.397, 150.644);
+  //   var mapOptions = {
+  //     zoom: 8,
+  //     center: latlng
+  //   }
+  //   map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  // }
+
+  // function codeAddress() {
+  //   var address = document.getElementById('address').value;
+  //   geocoder.geocode( { 'address': address}, function(results, status) {
+  //     if (status == 'OK') {
+  //       map.setCenter(results[0].geometry.location);
+  //       var marker = new google.maps.Marker({
+  //           map: map,
+  //           position: results[0].geometry.location
+  //       });
+  //     } else {
+  //       alert('Geocode was not successful for the following reason: ' + status);
+  //     }
+  //   });
+  // }
+
+
+
+
+
+}
+  })
+</script>
+<!-- <body onload="initialize()">
+    <div id="map" style="width: 320px; height: 480px;"></div>
+     <div>
+       <input id="address" type="textbox" value="Sydney, NSW">
+       <input type="button" value="Encode" onclick="codeAddress()">
+     </div>
+   </body> -->
+</body>
+</html>
